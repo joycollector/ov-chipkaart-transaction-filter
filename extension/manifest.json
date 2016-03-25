@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "OV-Chipkaart",
+  "description": "OV-Chipkaart Exporter",
+  "version": "1.0",
+  "icons": {
+    "400": "icon.png"
+  },
+  "content_scripts": [{
+    "matches": ["*://*.ov-chipkaart.nl/*"],
+    "js": ["content.js"]
+  }],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "https://www.ov-chipkaart.nl/"
+  ]
+}

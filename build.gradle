@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'com.kasoverskiy.ovchipkaart.OVApplicaton'
+
+dependencies  {
+    compile 'io.dropwizard:dropwizard-core:1.0.0-rc2'
+    compile 'com.rethinkdb:rethinkdb-driver:2.2-beta-5'
+}

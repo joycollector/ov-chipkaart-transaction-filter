@@ -6,7 +6,7 @@ repositories {
     mavenCentral()
 }
 
-mainClassName = 'com.kasoverskiy.ovchipkaart.OVApplicaton'
+mainClassName = 'com.kasoverskiy.ovchipkaart.OVApplication'
 
 dependencies  {
     compile 'io.dropwizard:dropwizard-core:1.0.0-rc2'

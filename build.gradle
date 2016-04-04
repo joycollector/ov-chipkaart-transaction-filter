@@ -15,5 +15,4 @@ dependencies  {
     compile 'org.json:json:20160212'
     compile 'org.apache.commons:commons-csv:1.2'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
-
 }

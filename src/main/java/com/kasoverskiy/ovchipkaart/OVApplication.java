@@ -1,5 +1,6 @@
 package com.kasoverskiy.ovchipkaart;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -14,6 +15,9 @@ public class OVApplication extends Application<OVConfiguration> {
 
     @Override
     public void run(OVConfiguration configuration, Environment environment) throws Exception {
-
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setJavaScriptEnabled(true);
+        // Need to disable javascript errors due to errors during CSV download.
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
     }
 }

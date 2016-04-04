@@ -10,5 +10,7 @@ mainClassName = 'com.kasoverskiy.ovchipkaart.OVApplication'
 
 dependencies  {
     compile 'io.dropwizard:dropwizard-core:1.0.0-rc2'
+    compile 'net.sourceforge.htmlunit:htmlunit:2.20'
     compile 'com.rethinkdb:rethinkdb-driver:2.2-beta-5'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }

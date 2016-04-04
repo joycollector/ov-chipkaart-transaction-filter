@@ -2,15 +2,15 @@ package com.kasoverskiy.ovchipkaart.model;
 
 import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by Вадим on 03.04.2016.
  */
 public class Transaction {
-    private Date checkIn;
+    private Calendar checkIn;
     private String departure;
-    private Date checkOut;
+    private Calendar checkOut;
 
 
     private String destination;
@@ -20,8 +20,8 @@ public class Transaction {
     private String product;
     private String comments;
 
-    public Transaction(Date checkIn, String departure,
-                       Date checkOut, String destination,
+    public Transaction(Calendar checkIn, String departure,
+                       Calendar checkOut, String destination,
                        double amount, String transaction,
                        @Nullable String classTrans, @Nullable String comments, @Nullable String product) {
         this.checkIn = checkIn;
@@ -35,7 +35,7 @@ public class Transaction {
         this.product = product;
     }
 
-    public Date getCheckIn() {
+    public Calendar getCheckIn() {
         return checkIn;
     }
 
@@ -43,7 +43,7 @@ public class Transaction {
         return departure;
     }
 
-    public Date getCheckOut() {
+    public Calendar getCheckOut() {
         return checkOut;
     }
 
@@ -71,6 +71,7 @@ public class Transaction {
     public String toString() {
         SimpleDateFormat start = new SimpleDateFormat("E yyyy/MM/dd");
         SimpleDateFormat end = new SimpleDateFormat("HH:mm");
-        return start.format(checkIn) + " " + departure + " -> " + end.format(checkOut) + " " + destination;
+//        return (checkIn) + " " + departure + " -> " + (checkOut) + " " + destination;
+        return start.format(checkIn.getTime()) + " " + departure + " -> " + end.format(checkOut.getTime()) + " " + destination;
     }
 }

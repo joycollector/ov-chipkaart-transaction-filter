@@ -15,36 +15,17 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * Created by Вадим on 03.04.2016.
+ * Created by пїЅпїЅпїЅпїЅпїЅ on 03.04.2016.
  */
 public class CsvImporter {
     public List<Transaction> importCsv(InputStream is) throws IOException {
-        List<Transaction> result = new ArrayList<Transaction>();
-        LocalDateTime checkIn;
-        LocalDateTime checkOut;
-        double amounth;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        List<Transaction> result = new ArrayList<>();
+        List<CSVRecord> list = getCsvRecords(is);
 
-        CSVParser csvParser = new CSVParser(reader, CSVFormat.newFormat(';').withSkipHeaderRecord(true).withQuote('"'));
-        List<CSVRecord> list = csvParser.getRecords();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         for (CSVRecord csvRecord : list) {
             try {
-                checkIn = LocalDateTime.parse(csvRecord.get(0).concat(" 00:00"), formatter);
-                checkOut = LocalDateTime.parse(csvRecord.get(0).concat(" ").concat(csvRecord.get(3)), formatter);
-                amounth = Double.valueOf(csvRecord.get(5));
-                result.add(new Transaction.Builder()
-                        .checkIn(checkIn)
-                        .departure(csvRecord.get(2))
-                        .checkOut(checkOut)
-                        .destination(csvRecord.get(4))
-                        .amount(amounth)
-                        .transaction(csvRecord.get(6))
-                        .classTrans(csvRecord.get(7))
-                        .product(csvRecord.get(8))
-                        .comments(csvRecord.get(9))
-                        .build());
+                Transaction transaction = convertToTransaction(csvRecord);
+                result.add(transaction);
             } catch (DateTimeParseException e) {
                 //skip header
                 //because method CSVParser.withSkipHeaderRecord isn't worked
@@ -65,6 +46,33 @@ public class CsvImporter {
             }
         });
         return result;
+    }
+
+    Transaction convertToTransaction(CSVRecord csvRecord) {
+        LocalDateTime checkIn;
+        LocalDateTime checkOut;
+        double amounth;DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        checkIn = LocalDateTime.parse(csvRecord.get(0).concat(" 00:00"), formatter);
+        checkOut = LocalDateTime.parse(csvRecord.get(0).concat(" ").concat(csvRecord.get(3)), formatter);
+        amounth = Double.valueOf(csvRecord.get(5));
+        return new Transaction.Builder()
+                .checkIn(checkIn)
+                .departure(csvRecord.get(2))
+                .checkOut(checkOut)
+                .destination(csvRecord.get(4))
+                .amount(amounth)
+                .transaction(csvRecord.get(6))
+                .classTrans(csvRecord.get(7))
+                .product(csvRecord.get(8))
+                .comments(csvRecord.get(9))
+                .build();
+    }
+
+    List<CSVRecord> getCsvRecords(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        CSVParser csvParser = new CSVParser(reader, CSVFormat.newFormat(';').withSkipHeaderRecord(true).withQuote('"'));
+        return csvParser.getRecords();
     }
 
     public static void main(String[] args) throws IOException {

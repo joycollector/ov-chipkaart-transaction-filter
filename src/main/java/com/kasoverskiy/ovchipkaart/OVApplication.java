@@ -20,4 +20,5 @@ public class OVApplication extends Application<OVConfiguration> {
         // Need to disable javascript errors due to errors during CSV download.
         webClient.getOptions().setThrowExceptionOnScriptError(false);
     }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" type="text/css" href="report.css"/>
 
@@ -255,7 +255,7 @@
     <style type="text/css">
         @page land {
             size: landscape;
-            margin: 0px;
+            margin-top: 1cm;
         }
 
         @page port {
@@ -269,9 +269,6 @@
 </head>
 <body class="landscapePage">
 <div id="page_1" class="p2">
-    <!--<div id="dimg1">
-        <img src="logo.png" id="img1">
-    </div>-->
     <div id="id_1">
         <p class="p2 ft0">Specification transactions</p>
         <table cellpadding="0" cellspacing="0" class="t0">
@@ -308,7 +305,7 @@
                 <td class="tr6 td9"><p class="p2 ft12"></p></td>
                 <td class="tr6 td1">
                     <p class="p2 ft2">
-                        <nobr>01-04-2016</nobr>
+                        01-04-2016
                     </p>
                 </td>
                 <td class="tr6 td2"><p class="p2 ft12"></p></td>
@@ -321,7 +318,7 @@
                 <td class="tr6 td9"><p class="p2 ft12"></p></td>
                 <td class="tr6 td1">
                     <p class="p2 ft2">
-                        <nobr>03-04-2016</nobr>
+                        03-04-2016
                     </p>
                 </td>
                 <td class="tr6 td2"><p class="p2 ft12"></p></td>
@@ -337,13 +334,13 @@
                 <td class="col-01"><p class="p2 ft12">Date</p></td>
                 <td class="col-02">
                     <p class="p2 ft12">
-                        <nobr>Check-in</nobr>
+                        Check-in
                     </p>
                 </td>
                 <td class="col-03"><p class="p2 ft12">Departure</p></td>
                 <td class="col-04">
                     <p class="p2 ft12">
-                        <nobr>Check-out</nobr>
+                        Check-out
                     </p>
                 </td>
                 <td class="col-05"><p class="p2 ft12">Destination</p></td>
@@ -353,67 +350,23 @@
                 <td class="col-09"><p class="p2 ft12">Comments</p></td>
                 <td class="col-10"><p class="p2 ft12"></p></td>
             </tr>
-            <tr class="row-16px">
+            <tr class="row-16px" th:each="transaction,iterStat : ${transactions}" th:class="${iterStat.even}?'background-rose'">
                 <td class="col-01">
-                    <p class="p2 ft12">
-                        <nobr>02-04-2016</nobr>
+                    <p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckIn(), 'dd-MM-yyyy')}">
+                        02-04-2016
                     </p>
                 </td>
                 <td class="col-02"><p class="p2 ft12"></p></td>
-                <td class="col-03"><p class="p2 ft12">Schiphol Airport</p></td>
-                <td class="col-04"><p class="p2 ft12">12:07</p></td>
-                <td class="col-05"><p class="p2 ft12">Amsterdam RAI</p></td>
-                <td class="col-06"><p class="p2 ft12">€ 3.00</p></td>
+                <td class="col-03"><p class="p2 ft12" th:text="${transaction.getDeparture()}">Schiphol Airport</p></td>
+                <td class="col-04"><p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckOut(), 'HH:mm')}">12:07</p></td>
+                <td class="col-05"><p class="p2 ft12" th:text="${transaction.getDestination()}">Amsterdam RAI</p></td>
+                <td class="col-06"><p class="p2 ft12" th:text="${transaction.getAmount()}">€ 3.00</p></td>
                 <td class="col-07">
                     <p class="p2 ft12">
-                        <nobr>Check-out</nobr>
+                        Check-out
                     </p>
                 </td>
-                <td class="col-08"><p class="p2 ft12">Reizen op Saldo NS Vol tari...</p></td>
-                <td class="col-09"><p class="p2 ft12"></p></td>
-                <td class="col-10"><p class="p2 ft12"></p></td>
-            </tr>
-            <tr class="row-16px background-rose">
-                <td class="col-01">
-                    <p class="p2 ft12">
-                        <nobr>02-04-2016</nobr>
-                    </p>
-                </td>
-                <td class="col-02"><p class="p2 ft12"></p></td>
-                <td class="col-03"><p class="p2 ft12">Unknown Check In</p></td>
-                <td class="col-04"><p class="p2 ft12">12:18</p></td>
-                <td class="col-05"><p class="p2 ft12">Unknown Check Out</p></td>
-                <td class="col-06"><p class="p2 ft12">€ 0.89</p></td>
-                <td class="col-07">
-                    <p class="p2 ft12">
-                        <nobr>Check-out</nobr>
-                    </p>
-                </td>
-                <td class="col-08"><p class="p2 ft12"></p></td>
-                <td class="col-09"><p class="p2 ft12"></p></td>
-                <td class="col-10"><p class="p2 ft12"></p></td>
-            </tr>
-            <tr class="row-16px">
-                <td class="col-01"><p class="p2 ft12"></p></td>
-                <td class="col-02"><p class="p2 ft12"></p></td>
-                <td class="col-03"><p class="p2 ft12"></p></td>
-                <td class="col-04"><p class="p2 ft12"></p></td>
-                <td class="col-05"><p class="p2 ft12"></p></td>
-                <td class="col-06"><p class="p2 ft12"></p></td>
-                <td class="col-07"><p class="p2 ft12"></p></td>
-                <td class="col-08"><p class="p2 ft12"></p></td>
-                <td class="col-09"><p class="p2 ft12"></p></td>
-                <td class="col-10"><p class="p2 ft12"></p></td>
-            </tr>
-            <tr class="row-16px background-rose">
-                <td class="col-01"><p class="p2 ft12"></p></td>
-                <td class="col-02"><p class="p2 ft12"></p></td>
-                <td class="col-03"><p class="p2 ft12"></p></td>
-                <td class="col-04"><p class="p2 ft12"></p></td>
-                <td class="col-05"><p class="p2 ft12"></p></td>
-                <td class="col-06"><p class="p2 ft12"></p></td>
-                <td class="col-07"><p class="p2 ft12"></p></td>
-                <td class="col-08"><p class="p2 ft12"></p></td>
+                <td class="col-08"><p class="p2 ft12" th:text="${transaction.getProduct()}">Reizen op Saldo NS Vol tari...</p></td>
                 <td class="col-09"><p class="p2 ft12"></p></td>
                 <td class="col-10"><p class="p2 ft12"></p></td>
             </tr>

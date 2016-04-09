@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="report.css"/>
+
+    <style type="text/css">
+
+        body {
+            margin-top: 0px;
+            margin-left: 0px;
+        }
+
+        #page_1 {
+            position: relative;
+            overflow: hidden;
+            margin: 10mm;
+            padding: 0px;
+            border: none;
+            width: 257mm;
+        }
+
+        #page_1 #id_1 {
+            border: none;
+            margin: 35px 0px 0px 1px;
+            padding: 0px;
+            width: 1019px;
+            overflow: hidden;
+        }
+
+        .ft0 {
+            font: 16px 'Arial';
+            line-height: 18px;
+        }
+
+        .ft2 {
+            font: 15px 'Helvetica';
+            line-height: 17px;
+        }
+
+        .header-value {
+            padding: 0px;
+            margin: 0px;
+            width: 153px;
+            vertical-align: bottom;
+            font: 15px 'Helvetica';
+            line-height: 14px;
+        }
+
+        .ft8 {
+            font: 15px 'Arial';
+            line-height: 17px;
+        }
+
+        .ft12 {
+            font: 11px 'Arial';
+            line-height: 14px;
+        }
+
+        .ft14 {
+            font: bold 12px 'Arial';
+            line-height: 15px;
+        }
+
+        .p2 {
+            text-align: left;
+            padding-left: 10px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            white-space: nowrap;
+        }
+
+        .p4 {
+            text-align: right;
+            padding-right: 4px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            white-space: nowrap;
+        }
+
+        .p6 {
+            text-align: left;
+            padding-left: 5px;
+            margin-top: 56px;
+            margin-bottom: 0px;
+        }
+
+        .td0 {
+            padding: 0px;
+            margin: 0px;
+            width: 142px;
+            vertical-align: bottom;
+        }
+
+        .td1 {
+            padding: 0px;
+            margin: 0px;
+            width: 153px;
+            vertical-align: bottom;
+        }
+
+        .td2 {
+            padding: 0px;
+            margin: 0px;
+            width: 84px;
+            vertical-align: bottom;
+        }
+
+        .td3 {
+            padding: 0px;
+            margin: 0px;
+            width: 158px;
+            vertical-align: bottom;
+        }
+
+        .td4 {
+            padding: 0px;
+            margin: 0px;
+            width: 12px;
+            vertical-align: bottom;
+        }
+
+        .td5 {
+            padding: 0px;
+            margin: 0px;
+            width: 37px;
+            vertical-align: bottom;
+        }
+
+        .header-label {
+            font: bold 15px 'Arial';
+            line-height: 14px;
+            padding: 0px;
+            margin: 0px;
+            width: 153px;
+            vertical-align: bottom;
+        }
+
+        .td8 {
+
+        }
+
+        .td9 {
+            padding: 0px;
+            margin: 0px;
+            width: 59px;
+            vertical-align: bottom;
+        }
+
+        .col-01 {
+            padding: 0px;
+            margin: 0px;
+            width: 83px;
+            vertical-align: bottom;
+
+        }
+
+        .col-02 {
+            padding: 0px;
+            margin: 0px;
+            width: 59px;
+            vertical-align: bottom;
+
+        }
+
+        .col-03 {
+            padding: 0px;
+            margin: 0px;
+            width: 153px;
+            vertical-align: bottom;
+
+        }
+
+        .col-04 {
+            padding: 0px;
+            margin: 0px;
+            width: 84px;
+            vertical-align: bottom;
+
+        }
+
+        .col-05 {
+            padding: 0px;
+            margin: 0px;
+            width: 158px;
+            vertical-align: bottom;
+
+        }
+
+        .col-06 {
+            padding: 0px;
+            margin: 0px;
+            width: 12px;
+            vertical-align: bottom;
+
+        }
+
+        .col-07 {
+            padding: 0px;
+            margin: 0px;
+            width: 37px;
+            vertical-align: bottom;
+
+        }
+
+        .col-08 {
+            padding: 0px;
+            margin: 0px;
+            width: 148px;
+            vertical-align: bottom;
+
+        }
+
+        .col-09 {
+            padding: 0px;
+            margin: 0px;
+            width: 158px;
+            vertical-align: bottom;
+
+        }
+
+        .col-10 {
+            padding: 0px;
+            margin: 0px;
+            width: 95px;
+            vertical-align: bottom;
+
+        }
+
+        .header-row {
+            height: 14px;
+        }
+
+        .tr4 {
+            height: 24px;
+        }
+
+        .tr6 {
+            height: 21px;
+        }
+
+        .background-rose {
+            background: #e23786;
+        }
+
+        .row-16px {
+            height: 16px;
+        }
+
+        .t0 {
+            margin-top: 7px;
+            font: 11px 'Arial';
+        }
+
+    </style>
+    <style type="text/css">
+        @page land {
+            size: landscape;
+            margin-top: 1cm;
+        }
+
+        @page port {
+            size: portrait;
+        }
+
+        .landscapePage {
+            page: land;
+        }
+    </style>
+</head>
+<body class="landscapePage">
+<div id="page_1" class="p2">
+    <div id="id_1">
+        <p class="p2 ft0">Specification transactions</p>
+        <table cellpadding="0" cellspacing="0" class="t0">
+            <tbody>
+            <tr>
+                <td class="header-row"><p class="header-label">Card number</p></td>
+                <td class="header-row td1"><p class="p2 header-value">3528020089725993</p></td>
+            </tr>
+            <tr>
+                <td class="header-row"><p class="header-label">Name</p></td>
+                <td class="header-row"><p class="p2 header-value">U. Sername</p></td>
+            </tr>
+            <tr>
+                <td class="header-row"><p class="header-label">Address</p></td>
+                <td class="header-row"><p class="p2 header-value">Somestreet 123 HS</p></td>
+            </tr>
+            <tr>
+                <td class="header-row"><p class="header-label">Postal code</p></td>
+                <td class="header-row"><p class="p2 header-value">1234AB</p></td>
+            </tr>
+            <tr>
+                <td class="header-row"><p class="header-label">City</p></td>
+                <td class="header-row"><p class="p2 header-value">AMSTERDAM</p></td>
+            </tr>
+            </tbody>
+        </table>
+        <table cellpadding="0" cellspacing="0" class="t0">
+            <tbody>
+            <tr>
+                <td colspan="2" class="tr4 td0"><p class="p2 header-label">Transactions</p></td>
+            </tr>
+            <tr>
+                <td class="tr6 td8"><p class="p2 header-label">Period from</p></td>
+                <td class="tr6 td9"><p class="p2 ft12"></p></td>
+                <td class="tr6 td1">
+                    <p class="p2 ft2">
+                        01-04-2016
+                    </p>
+                </td>
+                <td class="tr6 td2"><p class="p2 ft12"></p></td>
+                <td class="tr6 td3"><p class="p2 header-label">Total expenses</p></td>
+                <td class="tr6 td4"><p class="p2 ft8">€</p></td>
+                <td class="tr6 td5"><p class="p4 ft8">3.89</p></td>
+            </tr>
+            <tr>
+                <td class="tr6 td8"><p class="p2 header-label">Period to</p></td>
+                <td class="tr6 td9"><p class="p2 ft12"></p></td>
+                <td class="tr6 td1">
+                    <p class="p2 ft2">
+                        03-04-2016
+                    </p>
+                </td>
+                <td class="tr6 td2"><p class="p2 ft12"></p></td>
+                <td class="tr6 td3"><p class="p2 header-label">Total added</p></td>
+                <td class="tr6 td4"><p class="p2 ft8">€</p></td>
+                <td class="tr6 td5"><p class="p4 ft8">0.00</p></td>
+            </tr>
+            </tbody>
+        </table>
+        <table cellpadding="0" cellspacing="0" class="t0">
+            <tbody>
+            <tr class="row-16px background-rose">
+                <td class="col-01"><p class="p2 ft12">Date</p></td>
+                <td class="col-02">
+                    <p class="p2 ft12">
+                        Check-in
+                    </p>
+                </td>
+                <td class="col-03"><p class="p2 ft12">Departure</p></td>
+                <td class="col-04">
+                    <p class="p2 ft12">
+                        Check-out
+                    </p>
+                </td>
+                <td class="col-05"><p class="p2 ft12">Destination</p></td>
+                <td class="col-06"><p class="p2 ft12">Amount</p></td>
+                <td class="col-07"><p class="p2 ft12">Transaction</p></td>
+                <td class="col-08"><p class="p2 ft12">Product</p></td>
+                <td class="col-09"><p class="p2 ft12">Comments</p></td>
+                <td class="col-10"><p class="p2 ft12"></p></td>
+            </tr>
+            <tr class="row-16px" th:each="transaction,iterStat : ${transactions}" th:class="${iterStat.even}?'background-rose'">
+                <td class="col-01">
+                    <p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckIn(), 'dd-MM-yyyy')}">
+                        02-04-2016
+                    </p>
+                </td>
+                <td class="col-02"><p class="p2 ft12"></p></td>
+                <td class="col-03"><p class="p2 ft12" th:text="${transaction.getDeparture()}">Schiphol Airport</p></td>
+                <td class="col-04"><p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckOut(), 'HH:mm')}">12:07</p></td>
+                <td class="col-05"><p class="p2 ft12" th:text="${transaction.getDestination()}">Amsterdam RAI</p></td>
+                <td class="col-06"><p class="p2 ft12" th:text="${transaction.getAmount()}">€ 3.00</p></td>
+                <td class="col-07">
+                    <p class="p2 ft12">
+                        Check-out
+                    </p>
+                </td>
+                <td class="col-08"><p class="p2 ft12" th:text="${transaction.getProduct()}">Reizen op Saldo NS Vol tari...</p></td>
+                <td class="col-09"><p class="p2 ft12"></p></td>
+                <td class="col-10"><p class="p2 ft12"></p></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="p6 ft14">This form meets the requirements of the Dutch Tax Administraton.</p>
+    </div>
+</div>
+</body>
+</html>

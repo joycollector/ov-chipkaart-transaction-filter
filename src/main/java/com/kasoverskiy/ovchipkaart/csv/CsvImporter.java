@@ -1,66 +1,50 @@
 package com.kasoverskiy.ovchipkaart.csv;
 
+import com.kasoverskiy.ovchipkaart.OvException;
 import com.kasoverskiy.ovchipkaart.model.Transaction;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Created by ����� on 03.04.2016.
+ * Created by Vadelic on 03.04.2016.
  */
 public class CsvImporter {
-    public List<Transaction> importCsv(InputStream is) throws IOException {
-        List<Transaction> result = new ArrayList<>();
-        List<CSVRecord> list = getCsvRecords(is);
+    public List<Transaction> importCsv(InputStream is) {
+        List<CSVRecord> listCsvRecords = getCsvRecords(is);
 
-        for (CSVRecord csvRecord : list) {
-            try {
-                Transaction transaction = convertToTransaction(csvRecord);
-                result.add(transaction);
-            } catch (DateTimeParseException e) {
-                //skip header
-                //because method CSVParser.withSkipHeaderRecord isn't worked
-            }
-        }
-
-        result.removeIf(new Predicate<Transaction>() {
-            @Override
-            public boolean test(Transaction transaction) {
-                if (transaction.getCheckOut().getDayOfWeek() == DayOfWeek.SATURDAY ||
-                        transaction.getCheckOut().getDayOfWeek() == DayOfWeek.SUNDAY ||
-                        transaction.getCheckOut().getHour() >= 18 ||
-                        HolidaysNL.isHoliday(LocalDate.from(transaction.getCheckIn()))) {
-                    System.out.println("del "+transaction);
-                    return true;
-                }
-                return false;
-            }
-        });
-        return result;
+        List<Transaction> transactionList = listCsvRecords.stream()
+                .map(record -> convertToTransaction(record))
+                .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SATURDAY)
+                .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SUNDAY)
+                .filter(tr -> tr.getCheckOut().getHour() < 18)
+                .filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
+                .collect(Collectors.toList());
+        return transactionList;
     }
 
-    Transaction convertToTransaction(CSVRecord csvRecord) {
-        LocalDateTime checkIn;
-        LocalDateTime checkOut;
-        double amounth;DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        checkIn = LocalDateTime.parse(csvRecord.get(0).concat(" 00:00"), formatter);
-        checkOut = LocalDateTime.parse(csvRecord.get(0).concat(" ").concat(csvRecord.get(3)), formatter);
-        amounth = Double.valueOf(csvRecord.get(5));
+    protected Transaction convertToTransaction(CSVRecord csvRecord) {
         return new Transaction.Builder()
-                .checkIn(checkIn)
+                .dateCheckIn(csvRecord.get(0).length() == 0 ? LocalDate.of(0, 0, 0) :
+                        LocalDate.parse(csvRecord.get(0), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .checkIn(csvRecord.get(1).length() == 0 ? LocalTime.of(0, 0) :
+                        LocalTime.parse(csvRecord.get(1), DateTimeFormatter.ofPattern("HH:mm")))
                 .departure(csvRecord.get(2))
-                .checkOut(checkOut)
+                .checkOut(csvRecord.get(3).length() == 0 ? LocalTime.of(0, 0) :
+                        LocalTime.parse(csvRecord.get(3), DateTimeFormatter.ofPattern("HH:mm")))
                 .destination(csvRecord.get(4))
-                .amount(amounth)
+                .amount(Double.valueOf(csvRecord.get(5)))
                 .transaction(csvRecord.get(6))
                 .classTrans(csvRecord.get(7))
                 .product(csvRecord.get(8))
@@ -68,19 +52,19 @@ public class CsvImporter {
                 .build();
     }
 
-    List<CSVRecord> getCsvRecords(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    protected List<CSVRecord> getCsvRecords(InputStream is) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat
+                    .newFormat(';')
+                    .withHeader("\"Date\";\"Check-in\";\"Departure\";\"Check-out\";\"Destination\";\"Amount\";" +
+                            "\"Transaction\";\"Class\";\"Product\";\"Comments\"")
+                    .withSkipHeaderRecord(true)
+                    .withQuote('"'));
+            return csvParser.getRecords();
 
-        CSVParser csvParser = new CSVParser(reader, CSVFormat.newFormat(';').withSkipHeaderRecord(true).withQuote('"'));
-        return csvParser.getRecords();
-    }
-
-    public static void main(String[] args) throws IOException {
-        List<Transaction> a = new CsvImporter().importCsv(new FileInputStream(new File("src/test/resources/transactions_example.csv")));
-        for (Transaction transaction : a) {
-            System.out.println(transaction);
+        } catch (IOException e) {
+            throw new OvException(e);
         }
-        System.out.println(a.size());
-
     }
 }

@@ -36,12 +36,12 @@ public class CsvImporter {
 
     protected Transaction convertToTransaction(CSVRecord csvRecord) {
         return new Transaction.Builder()
-                .dateCheckIn(csvRecord.get(0).length() == 0 ? LocalDate.of(0, 0, 0) :
+                .dateCheckIn(csvRecord.get(0).length() == 0 ? null :
                         LocalDate.parse(csvRecord.get(0), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                .checkIn(csvRecord.get(1).length() == 0 ? LocalTime.of(0, 0) :
+                .checkIn(csvRecord.get(1).length() == 0 ? null :
                         LocalTime.parse(csvRecord.get(1), DateTimeFormatter.ofPattern("HH:mm")))
                 .departure(csvRecord.get(2))
-                .checkOut(csvRecord.get(3).length() == 0 ? LocalTime.of(0, 0) :
+                .checkOut(csvRecord.get(3).length() == 0 ? null :
                         LocalTime.parse(csvRecord.get(3), DateTimeFormatter.ofPattern("HH:mm")))
                 .destination(csvRecord.get(4))
                 .amount(Double.valueOf(csvRecord.get(5)))

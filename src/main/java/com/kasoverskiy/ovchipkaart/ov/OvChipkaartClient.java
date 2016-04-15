@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by joycollector on 4/3/16.
@@ -21,6 +22,7 @@ public class OvChipkaartClient implements Closeable {
     public static final String WWW_OVCHIPKAART_NL = "https://www.ov-chipkaart.nl";
     public final static String INLOGGEN = WWW_OVCHIPKAART_NL + "/inloggen.htm";
     public static final String MY_OVCHIPKAART = WWW_OVCHIPKAART_NL + "/my-ovchipkaart";
+    public static final String MY_CONTACT_DETALIS = MY_OVCHIPKAART + "/contact-details.htm";
     public final static String MY_TRAVEL_HISTORY = MY_OVCHIPKAART + "/my-travel-history/my-travel-history.htm";
     public final static String TRAVEL_HISTORY_DECLARATION_PATTERN = MY_OVCHIPKAART + "/my-travel-history/travel-history-declaration.htm?mediumid=%s&begindate=%s&enddate=%s&type=#make-declaration";
 
@@ -83,5 +85,40 @@ public class OvChipkaartClient implements Closeable {
 
     public String getTravelDeclarationUrl(String cardMediumId, LocalDate startDate, LocalDate endDate) {
         return String.format(TRAVEL_HISTORY_DECLARATION_PATTERN, cardMediumId, FORMATTER.format(startDate), FORMATTER.format(endDate));
+    }
+
+    public Map<String, String> getPersonalInfo(String cardId) {
+        try {
+            HtmlPage selectCard = webClient.getPage(MY_CONTACT_DETALIS);
+            List<HtmlElement> cards = selectCard.getDocumentElement().getElementsByAttribute("span", "class", "cs-card-number");
+            for (HtmlElement cardElement : cards) {
+                if (cardElement.getTextContent().equals(cardId)) {
+                    cardElement.click();
+                    break;
+                }
+            }
+            HtmlSubmitInput submitBtn = selectCard.getDocumentElement().getOneHtmlElementByAttribute("input", "value", "Next step");
+            selectCard = submitBtn.click();
+
+            Map<String, String> result = new HashMap<>();
+            result.put("cardId", cardId);
+
+            result.put("personName", String.join(" ",
+                    selectCard.getElementById("wmformfragment_voorletters").getAttribute("value"),
+                    selectCard.getElementById("wmformfragment_achternaam").getAttribute("value")
+            ));
+            result.put("address", String.join(" ",
+                    selectCard.getElementById("wmformfragment_straat").getAttribute("value"),
+                    selectCard.getElementById("wmformfragment_huisnummer").getAttribute("value"),
+                    selectCard.getElementById("wmformfragment_toevoeging").getAttribute("value")
+            ));
+            result.put("postCode", selectCard.getElementById("wmformfragment_postcode").getAttribute("value"));
+            result.put("city", selectCard.getElementById("wmformfragment_woonplaats").getAttribute("value"));
+
+
+            return result;
+        } catch (IOException e) {
+            throw new OvException("Unable to get personal data", e);
+        }
     }
 }

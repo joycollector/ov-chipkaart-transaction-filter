@@ -16,6 +16,7 @@ dependencies  {
     compile 'org.json:json:20160212'
     compile 'org.apache.commons:commons-csv:1.2'
     compile 'com.beust:jcommander:1.48'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }

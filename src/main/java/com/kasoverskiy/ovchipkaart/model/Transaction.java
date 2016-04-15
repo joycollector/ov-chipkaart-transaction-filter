@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
  * Created by Vadelic on 03.04.2016.
  */
 public class Transaction {
-    public LocalDate dateCheckIn;
+    private LocalDate dateCheckIn;
     private LocalTime checkIn;
     private String departure;
     private LocalTime checkOut;
@@ -85,7 +85,7 @@ public class Transaction {
     static public class Builder {
 
         private LocalDate dateCheckIn;
-        public LocalTime checkIn;
+        private LocalTime checkIn;
         private String departure;
         private LocalTime checkOut;
         private String destination;

@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +15,8 @@ import static org.junit.Assert.assertEquals;
  * Created by joycollector on 4/5/16.
  */
 public class CsvImporterTest {
-    final String CSV_TEST_FILE = "src/test/resources/transactions_example.csv";
+    static final String CSV_TEST_FILE = "src/test/resources/transactions_example.csv";
+    static final String CSV_TEST_FILE_6 = "src/test/resources/transactions_example6.csv";
 
     @Test
     public void testGetCsvRecords() throws Exception {
@@ -43,7 +45,13 @@ public class CsvImporterTest {
 
     @Test
     public void testImportCsv() throws Exception {
-        List<Transaction> result = new CsvImporter().importCsv(new FileInputStream(CSV_TEST_FILE));
+        List<String> list = new ArrayList<>();
+//        list.add("Schiphol, Airport");
+        list.add("Schiphol-Rijk");
+
+        List<Transaction> result = new CsvImporter().importCsv(new FileInputStream(CSV_TEST_FILE), list);
         assertEquals(69, result.size());
+
+
     }
 }

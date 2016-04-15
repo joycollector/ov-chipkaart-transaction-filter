@@ -21,7 +21,13 @@ import java.util.stream.Collectors;
  * Created by Vadelic on 03.04.2016.
  */
 public class CsvImporter {
-    public List<Transaction> importCsv(InputStream is) {
+    /**
+     *
+     * @param is
+     * @param workStation
+     * @return
+     */
+    public List<Transaction> importCsv(InputStream is, List<String> workStation) {
         List<CSVRecord> listCsvRecords = getCsvRecords(is);
 
         List<Transaction> transactionList = listCsvRecords.stream()
@@ -31,7 +37,16 @@ public class CsvImporter {
                 .filter(tr -> tr.getCheckOut().getHour() < 18)
                 .filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
                 .collect(Collectors.toList());
-        return transactionList;
+
+        List<LocalDate> daysOnWorkStation = transactionList.stream()
+                .filter(tr -> workStation.contains(tr.getDestination()) || workStation.contains(tr.getDeparture()))
+                .map(tr -> tr.getDateCheckIn())
+                .distinct()
+                .collect(Collectors.toList());
+
+        return transactionList.stream()
+                .filter(tr -> daysOnWorkStation.contains(tr.getDateCheckIn()))
+                .collect(Collectors.toList());
     }
 
     protected Transaction convertToTransaction(CSVRecord csvRecord) {

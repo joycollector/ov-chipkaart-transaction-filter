@@ -24,10 +24,10 @@ public class HtmlGeneratorTest {
 
         LocalDate beginPeriod = LocalDate.parse("04-02-2016", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         LocalDate endPeriod = LocalDate.parse("05-03-2016",DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        ByteArrayInputStream bStream = new HtmlGenerator().createHtml(result, "134567890", beginPeriod, endPeriod);
+        /*ByteArrayInputStream bStream = new HtmlGenerator().createHtml(result, "134567890", beginPeriod, endPeriod);
         try (OutputStream os = new FileOutputStream("src/test/resources/testHtmlGenerator.html")) {
             IOUtils.copy(bStream, os);
-        }
+        }*/
 
 
     }

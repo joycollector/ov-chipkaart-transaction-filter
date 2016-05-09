@@ -34,7 +34,7 @@ public class CsvImporter {
                 .map(record -> convertToTransaction(record))
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SATURDAY)
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SUNDAY)
-                .filter(tr -> tr.getCheckOut().getHour() < 18)
+                .filter(tr -> tr.getCheckOut().getHour() < 20)
                 .filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
                 .collect(Collectors.toList());
 

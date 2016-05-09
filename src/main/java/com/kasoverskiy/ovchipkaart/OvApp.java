@@ -30,21 +30,20 @@ import java.util.stream.Collectors;
  */
 public class OvApp {
 
-    @Parameter(names = {"-login", "-l"}, description = "login OV Chipkaart")
+    @Parameter(names = {"-login", "-l"}, description = "login OV Chipkaart", required = true)
     private String username;
-    @Parameter(names = {"-password", "-p"}, description = "password OV Chipkaart")
+    @Parameter(names = {"-password", "-p"}, description = "password OV Chipkaart", required = true)
     private String password;
-    @Parameter(names = "-id", description = "ID card")
+    @Parameter(names = "-id", description = "Card number", required = true)
     private String cardId;
-    @Parameter(names = {"-begin", "-b"}, description = "initial date for report", converter = ArgsToLocalDate.class)
+    @Parameter(names = {"-begin", "-b"}, description = "initial date for report", converter = ArgsToLocalDate.class, required = true)
     private LocalDate beginPeriod;
-    @Parameter(names = {"-end", "-e"}, description = "final date for report", converter = ArgsToLocalDate.class)
+    @Parameter(names = {"-end", "-e"}, description = "final date for report", converter = ArgsToLocalDate.class, required = true)
     private LocalDate endPeriod;
-    @Parameter(names = "-path", description = "destination path and file name")
+    @Parameter(names = "-path", description = "out pdf", required = true)
     private Path pathOutPdf;
     @Parameter(names = {"-station", "-s"}, variableArity = true, description = "Work station")
     private List<String> workStation = new ArrayList<>();
-
 
     public static class ArgsToLocalDate implements IStringConverter<LocalDate> {
 
@@ -56,23 +55,17 @@ public class OvApp {
 
 
     public static void main(String[] args) {
-
-/*        args = new String[]{
-                "-l", "joycollector",
-                "-p", "Temp1234",
-                "-id", "3528020089725993",
-                "-begin", "04-02-2016",
-                "-end", "05-03-2016",
-                "-path", "jan_fev2016.pdf",
-                "-s", "Schiphol, Airport", "Schiphol-Rijk"
-        };
-*/
         OvApp ovApp = new OvApp();
         //This replacement emulates shutdown separator "comma"
         args = Arrays.stream(args).map(s -> s.replace(",", "&separator&")).toArray(String[]::new);
-        new JCommander(ovApp, args);
-        ovApp.workStation = ovApp.workStation.stream().map(s -> s.replace("&separator&", ",")).collect(Collectors.toList());
-        ovApp.run();
+        JCommander jCommander = new JCommander(ovApp);
+        if (args.length == 0) {
+            jCommander.usage();
+        } else {
+            jCommander.parse(args);
+            ovApp.workStation = ovApp.workStation.stream().map(s -> s.replace("&separator&", ",")).collect(Collectors.toList());
+            ovApp.run();
+        }
     }
 
     private void run() {

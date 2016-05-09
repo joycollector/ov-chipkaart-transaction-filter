@@ -2,11 +2,20 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'com.kasoverskiy.ovchipkaart.OvApp'
+
 repositories {
     mavenCentral()
 }
-
-mainClassName = 'com.kasoverskiy.ovchipkaart.OvApplication'
 
 dependencies  {
     compile 'net.sourceforge.htmlunit:htmlunit:2.20'

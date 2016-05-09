@@ -4,7 +4,9 @@ import com.kasoverskiy.ovchipkaart.model.Transaction;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -13,26 +15,43 @@ import static org.junit.Assert.assertEquals;
  * Created by joycollector on 4/5/16.
  */
 public class CsvImporterTest {
+    static final String CSV_TEST_FILE = "src/test/resources/transactions_example.csv";
+    static final String CSV_TEST_FILE_6 = "src/test/resources/transactions_example6.csv";
 
     @Test
     public void testGetCsvRecords() throws Exception {
         CsvImporter csvImporter = new CsvImporter();
-        String testData = "\"02-03-2016\";\"\";\"Schiphol Airport\";\"18:51\";\"Amsterdam RAI\";\"3.00\";\"Check-out\";\"\";\"Reizen op Saldo NS Vol tarief (2nd class)\";\"\"\n" +
-                "\"02-03-2016\";\"\";\"Station RAI\";\"18:58\";\"Victorieplein\";\"0.25\";\"Check-out\";\"\";\"\";\"\"";
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(testData.getBytes("UTF-8"));
-        List<CSVRecord> csvRecords = csvImporter.getCsvRecords(byteArrayInputStream);
-        assertEquals(2, csvRecords.size());
-        assertEquals("02-03-2016", csvRecords.get(0).get(0));
+        List<CSVRecord> csvRecords = csvImporter.getCsvRecords(new FileInputStream(CSV_TEST_FILE));
+        assertEquals(97, csvRecords.size());
     }
 
     @Test
     public void testConvertToTransaction() throws Exception {
+
         CsvImporter csvImporter = new CsvImporter();
-        String testData = "\"02-03-2016\";\"\";\"Schiphol Airport\";\"18:51\";\"Amsterdam RAI\";\"3.00\";\"Check-out\";\"\";\"Reizen op Saldo NS Vol tarief (2nd class)\";\"\"";
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(testData.getBytes("UTF-8"));
-        List<CSVRecord> csvRecords = csvImporter.getCsvRecords(byteArrayInputStream);
+        List<CSVRecord> csvRecords = csvImporter.getCsvRecords(new FileInputStream(CSV_TEST_FILE));
         Transaction transaction = csvImporter.convertToTransaction(csvRecords.get(0));
-        assertEquals(3.0d, transaction.getAmount(), 0d);
-        assertEquals("Schiphol Airport", transaction.getDeparture());
+
+        for (Field f : transaction.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            System.out.println(f.getName() + " \"" + f.get(transaction) + "\"");
+        }
+
+        assertEquals("Pres. Kennedylaan", csvRecords.get(0).get(2));
+        assertEquals("06:27", csvRecords.get(0).get(3));
+        assertEquals("Station RAI", csvRecords.get(0).get(4));
+        assertEquals("1.07", csvRecords.get(0).get(5));
+    }
+
+    @Test
+    public void testImportCsv() throws Exception {
+        List<String> list = new ArrayList<>();
+//        list.add("Schiphol, Airport");
+        list.add("Schiphol-Rijk");
+
+        List<Transaction> result = new CsvImporter().importCsv(new FileInputStream(CSV_TEST_FILE), list);
+        assertEquals(69, result.size());
+
+
     }
 }

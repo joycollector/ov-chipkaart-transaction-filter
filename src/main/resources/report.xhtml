@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" type="text/css" href="report.css"/>
@@ -251,6 +251,8 @@
             font: 11px 'Arial';
         }
 
+
+
     </style>
     <style type="text/css">
         @page land {
@@ -265,6 +267,8 @@
         .landscapePage {
             page: land;
         }
+
+
     </style>
 </head>
 <body class="landscapePage">
@@ -275,23 +279,23 @@
             <tbody>
             <tr>
                 <td class="header-row"><p class="header-label">Card number</p></td>
-                <td class="header-row td1"><p class="p2 header-value">3528020089725993</p></td>
+                <td class="header-row td1"><p class="p2 header-value" th:text="${personalInfo.cardId}">3528020089725993</p></td>
             </tr>
             <tr>
                 <td class="header-row"><p class="header-label">Name</p></td>
-                <td class="header-row"><p class="p2 header-value">U. Sername</p></td>
+                <td class="header-row"><p class="p2 header-value" th:text="${personalInfo.personName}" >U. Sername</p></td>
             </tr>
             <tr>
                 <td class="header-row"><p class="header-label">Address</p></td>
-                <td class="header-row"><p class="p2 header-value">Somestreet 123 HS</p></td>
+                <td class="header-row"><p class="p2 header-value" th:text="${personalInfo.address}">Somestreet 123 HS</p></td>
             </tr>
             <tr>
                 <td class="header-row"><p class="header-label">Postal code</p></td>
-                <td class="header-row"><p class="p2 header-value">1234AB</p></td>
+                <td class="header-row"><p class="p2 header-value"  th:text="${personalInfo.postCode}">1234AB</p></td>
             </tr>
             <tr>
                 <td class="header-row"><p class="header-label">City</p></td>
-                <td class="header-row"><p class="p2 header-value">AMSTERDAM</p></td>
+                <td class="header-row"><p class="p2 header-value" th:text="${personalInfo.city}">AMSTERDAM</p></td>
             </tr>
             </tbody>
         </table>
@@ -304,22 +308,17 @@
                 <td class="tr6 td8"><p class="p2 header-label">Period from</p></td>
                 <td class="tr6 td9"><p class="p2 ft12"></p></td>
                 <td class="tr6 td1">
-                    <p class="p2 ft2">
-                        01-04-2016
-                    </p>
+                    <p class="p2 ft2" th:text="${#temporals.format(beginPeriod, 'dd-MM-yyyy')}">01-04-2016 </p>
                 </td>
                 <td class="tr6 td2"><p class="p2 ft12"></p></td>
                 <td class="tr6 td3"><p class="p2 header-label">Total expenses</p></td>
                 <td class="tr6 td4"><p class="p2 ft8">€</p></td>
-                <td class="tr6 td5"><p class="p4 ft8">3.89</p></td>
+                <td class="tr6 td5"><p class="p4 ft8" th:text="${#aggregates.sum(amount)}">3.89</p></td>
             </tr>
             <tr>
                 <td class="tr6 td8"><p class="p2 header-label">Period to</p></td>
                 <td class="tr6 td9"><p class="p2 ft12"></p></td>
-                <td class="tr6 td1">
-                    <p class="p2 ft2">
-                        03-04-2016
-                    </p>
+                <td class="tr6 td1">  <p class="p2 ft2" th:text="${#temporals.format(endPeriod, 'dd-MM-yyyy')}"> 03-04-2016         </p>
                 </td>
                 <td class="tr6 td2"><p class="p2 ft12"></p></td>
                 <td class="tr6 td3"><p class="p2 header-label">Total added</p></td>
@@ -350,23 +349,27 @@
                 <td class="col-09"><p class="p2 ft12">Comments</p></td>
                 <td class="col-10"><p class="p2 ft12"></p></td>
             </tr>
-            <tr class="row-16px" th:each="transaction,iterStat : ${transactions}" th:class="${iterStat.even}?'background-rose'">
+            <tr class="row-16px" th:each="transaction,iterStat : ${transactions}"
+                th:class="${iterStat.odd}?'background-rose'">
                 <td class="col-01">
-                    <p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckIn(), 'dd-MM-yyyy')}">
+                    <p class="p2 ft12" th:text="${#temporals.format(transaction.getDateCheckIn(), 'dd-MM-yyyy')}">
                         02-04-2016
                     </p>
                 </td>
                 <td class="col-02"><p class="p2 ft12"></p></td>
                 <td class="col-03"><p class="p2 ft12" th:text="${transaction.getDeparture()}">Schiphol Airport</p></td>
-                <td class="col-04"><p class="p2 ft12" th:text="${#temporals.format(transaction.getCheckOut(), 'HH:mm')}">12:07</p></td>
+                <td class="col-04"><p class="p2 ft12"
+                                      th:text="${#temporals.format(transaction.getCheckOut(), 'HH:mm')}">12:07</p></td>
                 <td class="col-05"><p class="p2 ft12" th:text="${transaction.getDestination()}">Amsterdam RAI</p></td>
-                <td class="col-06"><p class="p2 ft12" th:text="${transaction.getAmount()}">€ 3.00</p></td>
+                <td class="col-06"><p class="p2 ft12" th:text="${#numbers.formatDecimal(transaction.getAmount(),1,2)}">€
+                    3.00</p></td>
                 <td class="col-07">
                     <p class="p2 ft12">
                         Check-out
                     </p>
                 </td>
-                <td class="col-08"><p class="p2 ft12" th:text="${transaction.getProduct()}">Reizen op Saldo NS Vol tari...</p></td>
+                <td class="col-08"><p class="p2 ft12" th:text="${transaction.getProduct()}">Reizen op Saldo NS Vol
+                    tari...</p></td>
                 <td class="col-09"><p class="p2 ft12"></p></td>
                 <td class="col-10"><p class="p2 ft12"></p></td>
             </tr>

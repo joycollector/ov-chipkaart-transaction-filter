@@ -1,16 +1,18 @@
 package com.kasoverskiy.ovchipkaart.model;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Created by Вадим on 03.04.2016.
+ * Created by Vadelic on 03.04.2016.
  */
 public class Transaction {
-    private LocalDateTime checkIn;
+    private LocalDate dateCheckIn;
+    private LocalTime checkIn;
     private String departure;
-    private LocalDateTime checkOut;
+    private LocalTime checkOut;
     private String destination;
     private double amount;
     private String transaction;
@@ -19,6 +21,7 @@ public class Transaction {
     private String comments;
 
     private Transaction(Builder builder) {
+        this.dateCheckIn = builder.dateCheckIn;
         this.checkIn = builder.checkIn;
         this.departure = builder.departure;
         this.checkOut = builder.checkOut;
@@ -30,7 +33,11 @@ public class Transaction {
         this.product = builder.product;
     }
 
-    public LocalDateTime getCheckIn() {
+    public LocalDate getDateCheckIn() {
+        return dateCheckIn;
+    }
+
+    public LocalTime getCheckIn() {
         return checkIn;
     }
 
@@ -38,7 +45,7 @@ public class Transaction {
         return departure;
     }
 
-    public LocalDateTime getCheckOut() {
+    public LocalTime getCheckOut() {
         return checkOut;
     }
 
@@ -70,16 +77,17 @@ public class Transaction {
     public String toString() {
         SimpleDateFormat start = new SimpleDateFormat("E yyyy/MM/dd");
         SimpleDateFormat end = new SimpleDateFormat("HH:mm");
-//        return (checkIn) + " " + departure + " -> " + (checkOut) + " " + destination;
-        return checkIn.format(DateTimeFormatter.ofPattern("E dd-MM-yyyy")) + " " + departure + " -> " +
-                checkOut.format(DateTimeFormatter.ofPattern("HH:mm")) + " " + destination;
+//        return (dateCheckIn) + " " + departure + " -> " + (checkOut) + " " + destination;
+        return dateCheckIn.format(DateTimeFormatter.ofPattern("E dd-MM-yyyy")) + " " + departure + " -> " +
+                checkOut.format(DateTimeFormatter.ofPattern("HH:mm"))+" " +checkOut.getHour()+ " " + destination;
     }
 
     static public class Builder {
 
-        private LocalDateTime checkIn;
+        private LocalDate dateCheckIn;
+        private LocalTime checkIn;
         private String departure;
-        private LocalDateTime checkOut;
+        private LocalTime checkOut;
         private String destination;
         private double amount;
         private String transaction;
@@ -91,7 +99,12 @@ public class Transaction {
             return new Transaction(this);
         }
 
-        public Builder checkIn(LocalDateTime checkIn) {
+        public Builder dateCheckIn(LocalDate dateCheckIn) {
+            this.dateCheckIn = dateCheckIn;
+            return this;
+        }
+
+        public Builder checkIn(LocalTime checkIn) {
             this.checkIn = checkIn;
             return this;
         }
@@ -101,7 +114,7 @@ public class Transaction {
             return this;
         }
 
-        public Builder checkOut(LocalDateTime checkOut) {
+        public Builder checkOut(LocalTime checkOut) {
             this.checkOut = checkOut;
             return this;
         }

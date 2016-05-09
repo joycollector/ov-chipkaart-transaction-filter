@@ -2,21 +2,30 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'com.kasoverskiy.ovchipkaart.OvApp'
+
 repositories {
     mavenCentral()
 }
 
-mainClassName = 'com.kasoverskiy.ovchipkaart.OVApplication'
-
 dependencies  {
-    compile 'io.dropwizard:dropwizard-core:1.0.0-rc2'
     compile 'net.sourceforge.htmlunit:htmlunit:2.20'
     compile 'org.xhtmlrenderer:flying-saucer-pdf:9.0.8'
-    compile 'com.rethinkdb:rethinkdb-driver:2.2-beta-5'
     compile 'org.thymeleaf:thymeleaf:2.1.4.RELEASE'
     compile 'org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE'
     compile 'org.json:json:20160212'
     compile 'org.apache.commons:commons-csv:1.2'
+    compile 'com.beust:jcommander:1.48'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }

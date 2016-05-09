@@ -15,7 +15,7 @@ import java.util.Set;
 
 
 /**
- * Created by Вадим on 05.04.2016.
+ * Static class
  */
 public class HolidaysNL {
     static private Map<Integer, Set<LocalDate>> holidays = new HashMap<>();

@@ -31,16 +31,16 @@ public class CsvImporter {
         List<CSVRecord> listCsvRecords = getCsvRecords(is);
 
         List<Transaction> transactionList = listCsvRecords.stream()
-                .map(record -> convertToTransaction(record))
+                .map(this::convertToTransaction)
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SATURDAY)
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SUNDAY)
-                .filter(tr -> tr.getCheckOut().getHour() < 20)
+                .filter(tr -> tr.getCheckOut() == null || tr.getCheckOut().getHour() < 20)
                 .filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
                 .collect(Collectors.toList());
 
         List<LocalDate> daysOnWorkStation = transactionList.stream()
                 .filter(tr -> workStation.contains(tr.getDestination()) || workStation.contains(tr.getDeparture()))
-                .map(tr -> tr.getDateCheckIn())
+                .map(Transaction::getDateCheckIn)
                 .distinct()
                 .collect(Collectors.toList());
 

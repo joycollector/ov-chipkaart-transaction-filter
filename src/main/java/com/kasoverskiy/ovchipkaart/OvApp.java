@@ -10,9 +10,7 @@ import com.kasoverskiy.ovchipkaart.ov.OvChipkaartClient;
 import com.kasoverskiy.ovchipkaart.pdf.HtmlGenerator;
 import com.kasoverskiy.ovchipkaart.pdf.PdfGenerator;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  */
 public class OvApp {
 
+    public static final Logger LOGGER = Logger.getLogger("com.kasoverskiy.ovchipkaart");
     @Parameter(names = {"-login", "-l"}, description = "login OV Chipkaart", required = true)
     private String username;
     @Parameter(names = {"-password", "-p"}, description = "password OV Chipkaart", required = true)
@@ -54,7 +55,9 @@ public class OvApp {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
+        Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
         OvApp ovApp = new OvApp();
         //This replacement emulates shutdown separator "comma"
         args = Arrays.stream(args).map(s -> s.replace(",", "&separator&")).toArray(String[]::new);
@@ -68,41 +71,45 @@ public class OvApp {
         }
     }
 
-    private void run() {
+    private void run() throws IOException {
         try (
-                WebClient webClient = new WebClient();
-                OutputStream os = Files.newOutputStream(pathOutPdf)
+                WebClient webClient = new WebClient()
         ) {
+
             webClient.getOptions().setJavaScriptEnabled(true);
             // Need to disable javascript errors due to errors during CSV download.
             webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             OvChipkaartClient ovChipkaartClient = new OvChipkaartClient(webClient);
-
+            LOGGER.info("Log in for user " + username);
             if (!ovChipkaartClient.login(username, password)) {
                 throw new OvException("could not connect to the server");
             }
+            LOGGER.info("Logged in.");
 
-
+            LOGGER.info("Getting card with id " + cardId);
             String mediumId = ovChipkaartClient.getCards().get(cardId);
             if (mediumId == null) {
                 throw new OvException("Card " + cardId + " don't exist");
             }
+            LOGGER.info("Card found.");
 
+            LOGGER.info("Loading transactions for period " + beginPeriod + " - " + endPeriod);
             String csv = ovChipkaartClient.getTravelHistoryAsCsv(mediumId, beginPeriod, endPeriod);
             InputStream streamCsv = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
 
             List<Transaction> transactions = new CsvImporter().importCsv(streamCsv, workStation);
+            LOGGER.info("Transactions loaded.");
 
+            LOGGER.info("Getting personal info.");
             Map<String, String> personalInfo = ovChipkaartClient.getPersonalInfo(cardId);
+            LOGGER.info("Personal info loaded.");
+            LOGGER.info("Creating PDF.");
             ByteArrayInputStream byteArrayInStream = new HtmlGenerator().createHtml(transactions, personalInfo, beginPeriod, endPeriod);
-
-            new PdfGenerator().createPdf(byteArrayInStream, os);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new OvException(pathOutPdf + " file can't be created.", e);
+            try (OutputStream os = new FileOutputStream(pathOutPdf.toFile())) {
+                new PdfGenerator().createPdf(byteArrayInStream, os);
+            }
+            LOGGER.info("PDF created.");
         }
-
     }
 }

@@ -16,6 +16,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by Vadelic on 03.04.2016.
@@ -30,23 +31,31 @@ public class CsvImporter {
     public List<Transaction> importCsv(InputStream is, List<String> workStation) {
         List<CSVRecord> listCsvRecords = getCsvRecords(is);
 
-        List<Transaction> transactionList = listCsvRecords.stream()
+        Stream<Transaction> transactionStream = listCsvRecords.stream()
                 .map(this::convertToTransaction)
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SATURDAY)
                 .filter(tr -> tr.getDateCheckIn().getDayOfWeek() != DayOfWeek.SUNDAY)
-                .filter(tr -> tr.getCheckOut() == null || tr.getCheckOut().getHour() < 20)
-                .filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
-                .collect(Collectors.toList());
+                .filter(tr -> tr.getCheckOut() == null || tr.getCheckOut().getHour() < 20);
 
-        List<LocalDate> daysOnWorkStation = transactionList.stream()
-                .filter(tr -> workStation.contains(tr.getDestination()) || workStation.contains(tr.getDeparture()))
-                .map(Transaction::getDateCheckIn)
-                .distinct()
-                .collect(Collectors.toList());
+        List<Transaction> transactionList = transactionStream.collect(Collectors.toList());
 
-        return transactionList.stream()
-                .filter(tr -> daysOnWorkStation.contains(tr.getDateCheckIn()))
-                .collect(Collectors.toList());
+
+        if (workStation == null || workStation.isEmpty()) {
+            transactionList = transactionList.stream().filter(tr -> !HolidaysNL.isHoliday(tr.getDateCheckIn()))
+                    .collect(Collectors.toList());
+        } else {
+            List<LocalDate> daysOnWorkStation = transactionList.stream()
+                    .filter(tr -> workStation.stream().anyMatch(station -> tr.getDestination().contains(station))
+                            || workStation.stream().anyMatch(station -> tr.getDeparture().contains(station)))
+                    .map(Transaction::getDateCheckIn)
+                    .distinct()
+                    .collect(Collectors.toList());
+            transactionList = transactionList.stream()
+                    .filter(tr -> daysOnWorkStation.contains(tr.getDateCheckIn()))
+                    .collect(Collectors.toList());
+        }
+
+        return transactionList;
     }
 
     protected Transaction convertToTransaction(CSVRecord csvRecord) {

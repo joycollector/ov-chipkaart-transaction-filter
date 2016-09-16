@@ -10,12 +10,15 @@ import com.kasoverskiy.ovchipkaart.ov.OvChipkaartClient;
 import com.kasoverskiy.ovchipkaart.pdf.HtmlGenerator;
 import com.kasoverskiy.ovchipkaart.pdf.PdfGenerator;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,9 +42,9 @@ public class OvApp {
     private String cardId;
     @Parameter(names = {"-begin", "-b"}, description = "initial date for report", converter = ArgsToLocalDate.class, required = true)
     private LocalDate beginPeriod;
-    @Parameter(names = {"-end", "-e"}, description = "final date for report", converter = ArgsToLocalDate.class, required = true)
+    @Parameter(names = {"-end", "-e"}, description = "final date for report", converter = ArgsToLocalDate.class)
     private LocalDate endPeriod;
-    @Parameter(names = "-path", description = "out pdf", required = true)
+    @Parameter(names = "-path", description = "out pdf")
     private Path pathOutPdf;
     @Parameter(names = {"-station", "-s"}, variableArity = true, description = "Work station")
     private List<String> workStation = new ArrayList<>();
@@ -94,6 +97,10 @@ public class OvApp {
             }
             LOGGER.info("Card found.");
 
+            if (endPeriod == null) {
+                endPeriod = beginPeriod.with(TemporalAdjusters.lastDayOfMonth());
+            }
+
             LOGGER.info("Loading transactions for period " + beginPeriod + " - " + endPeriod);
             String csv = ovChipkaartClient.getTravelHistoryAsCsv(mediumId, beginPeriod, endPeriod);
             InputStream streamCsv = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
@@ -105,11 +112,18 @@ public class OvApp {
             Map<String, String> personalInfo = ovChipkaartClient.getPersonalInfo(cardId);
             LOGGER.info("Personal info loaded.");
             LOGGER.info("Creating PDF.");
+
+            if (pathOutPdf == null) {
+                pathOutPdf = Paths.get("ov-chipkaart-report-" + beginPeriod.toString() + "--" + endPeriod.toString() + ".pdf");
+            }
+
             ByteArrayInputStream byteArrayInStream = new HtmlGenerator().createHtml(transactions, personalInfo, beginPeriod, endPeriod);
             try (OutputStream os = new FileOutputStream(pathOutPdf.toFile())) {
                 new PdfGenerator().createPdf(byteArrayInStream, os);
             }
             LOGGER.info("PDF created.");
+            Desktop.getDesktop().open(pathOutPdf.toFile());
+
         }
     }
 }
